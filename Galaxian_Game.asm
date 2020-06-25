@@ -1,5 +1,5 @@
 
-
+; 0x0a030a04 first colum enemies
 start:
     push 39   ;shot
     push 25
@@ -181,6 +181,7 @@ jl notshot
 cmp ecx,1
 je notshot
 mov dword[0x10000004], edi
+#show edi
 mov ecx,dword[ebp+16]
 dec ecx
 mov dword[0x10000012],ecx
@@ -192,12 +193,16 @@ jne noreset
 #show[10] ascii 
 #show ["*"]
 #show[10] ascii 
-mov dword[edi],0x0e200e20  ; clean last shot pos
+#show edi
+;mov dword[edi],0x0e200e20  ; clean last shot pos
 mov dword[0x10000012],25   ; reset shot time
 mov dword[0x10000008],0    ; shot off
 mov ecx ,dword[0x10000016] ; ship position for shot to docking
 mov dword [ebp+20],ecx
 mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
 call offset_shot
 noreset:
 
