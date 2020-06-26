@@ -1,34 +1,51 @@
 
 ; 0x0a030a04 first colum enemies
 start:
+    
+    push 39   ;enemy1
+    push 15
     push 39   ;shot
     push 25
-    push 39
+    push 39   ;spaceship
     push 26
     call start
     add esp, 20
     #stop
  
-; dword [ebp+ 8] => Row
+; dword [ebp+ 8] => Row  ;ship
 ; dword [ebp+12] => Colum
-; dword [ebp+ 16] => Row
+; dword [ebp+ 16] => Row  ;shpt
 ; dword [ebp+20] => Colum
+; dword [ebp+ 24] => Row ;enemy1
+; dword [ebp+28] => Colum
 start:
     ;epilogo
     push ebp
     mov ebp, esp
-    ;space ship
+    ;--------------load space ship------------------------
     sub esp, 4
     mov dword [ebp-4], 0x04070406 ; Current space ship
     call offset
    mov dword[0x10000000], esi
-   ;paint shot
+   ; --------------- load paint shot--------------
      mov dword[0x10000016],39
    mov dword[0x10000008],0 ; turn on shot
    sub esp,4
    mov dword [ebp-8], 0x04000401  ; current shot
    call offset_shot
-    mov dword[0x10000004], edi
+   mov dword[0x10000004], edi
+    ; ----------------- load paint enemy1------------
+    sub esp,4
+    mov dword [ebp-12],0x0a030a04
+    call offset_enemy1
+    #show dword[0x10000020]
+
+;------------------paint enemy1--------------------
+    mov eax,dword[0x10000020]
+    mov ebx, dword[ebp-12]
+    mov dword[eax],ebx
+    
+
 $Game_loop:
   ;-----------------paint and clear ship-----------
     mov edx, dword[0x10000000] ;  last position ship
@@ -43,7 +60,9 @@ $Game_loop:
     mov ebx,dword[ebp-8]
     mov dword[edi],ebx
     call shot
+    #show dword[0xc1ae]
    
+      
     push 50
     call delay
     add esp, 4
@@ -171,6 +190,19 @@ mov edi, dword [ebp+16] ; Row
     shl edi, 1
     add edi, 0xb800
     ret
+
+offset_enemy1:
+mov eax, dword [ebp+24] ; Row
+    mov ebx, eax
+    shl eax, 6
+    shl ebx, 4
+    add eax, ebx
+    add eax, dword [ebp+28] ; Col
+    shl eax, 1
+    add eax, 0xb800
+    mov dword[0x10000020] , eax
+    ret
+
 
 
 shot:
