@@ -35,16 +35,18 @@ start:
    call offset_shot
    mov dword[0x10000004], edi
     ; ----------------- load paint enemy1------------
+    mov dword[0x10000024],0  ; death flag
     sub esp,4
     mov dword [ebp-12],0x0a030a04
     call offset_enemy1
     #show dword[0x10000020]
 
-;------------------paint enemy1--------------------
+   ; -------------paint enemy1-------------
     mov eax,dword[0x10000020]
     mov ebx, dword[ebp-12]
     mov dword[eax],ebx
     
+
 
 $Game_loop:
   ;-----------------paint and clear ship-----------
@@ -60,9 +62,16 @@ $Game_loop:
     mov ebx,dword[ebp-8]
     mov dword[edi],ebx
     call shot
-    #show dword[0xc1ae]
-   
-      
+;------------------paint enemy1--------------------
+
+       cmp dword[0x10000024],1
+       je death1
+       mov eax,dword[0x10000020]
+       mov ebx, dword[ebp-12]
+       mov dword[eax],ebx
+       death1:
+    
+
     push 50
     call delay
     add esp, 4
@@ -207,11 +216,16 @@ mov eax, dword [ebp+24] ; Row
 
 shot:
 
+
 mov ecx,dword[0x10000012]
 cmp dword[0x10000008],1
 jl notshot
 cmp ecx,1
 je notshot
+cmp dword[0x10000020],edi  ; kill enemy
+#show edi
+#show dword[0x10000020]
+je kill1                   ;--
 mov dword[0x10000004], edi
 #show edi
 mov ecx,dword[ebp+16]
@@ -237,6 +251,29 @@ mov ebx, 0x0e200e20 ;  clear
 mov dword[edx],ebx
 call offset_shot
 noreset:
+cmp dword[0x10000020],edi
+jne norestnext
+kill1:
+#show[10] ascii 
+#show ["**"]
+#show[10] ascii 
+#show edi
 
+mov dword[0x10000024],1      ; is death
+mov eax,dword[0x10000020]    ;
+#show dword[0x10000020]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000020],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+norestnext:
 
 ret
