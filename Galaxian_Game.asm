@@ -52,83 +52,56 @@ start:
    mov dword [ebp-8], 0x04000401  ; current shot
    call offset_shot
    mov dword[0x10000004], edi
-    ; ----------------- load paint enemy1------------ works middle
+    ; ----------------- load paint enemy1------------ ready
     mov dword[0x10000024],0  ; death flag
     sub esp,4
     mov dword [ebp-12],0x05030504
     call offset_enemy1
     #show dword[0x10000020]
-    ;-----------------load paint enemy2---------------- ; falta morir
+    ;-----------------load paint enemy2---------------- ; ready 
     mov dword[0x10000032],0  ; death flag
     sub esp,4
     mov dword [ebp-16],0x0a030a04
     call offset_enemy2
     #show dword[0x10000028]
 
-    ;-----------------print enemy2 test-----------------  
-
-    mov eax,dword[0x10000028]
-    mov ebx, dword[ebp-16]
-    mov dword[eax],ebx
-    ;-----------------load paint enemy3---------------- ; falta morir
+    ;-----------------load paint enemy3---------------- ; ready
     mov dword[0x10000046],0  ; death flag
     sub esp,4
     mov dword [ebp-20],0x0a030a04
     call offset_enemy3
      #show dword[0x10000036]
-    
-    ;-----------------print enemy3 test-----------------  
-    mov eax,dword[0x10000036]
-    mov ebx, dword[ebp-20]
-    mov dword[eax],ebx
 
-    ;-----------------load paint enemy4---------------- ; falta morir
+
+    ;-----------------load paint enemy4---------------- ; ready
     mov dword[0x10000050],0  ; death flag
     sub esp,4
     mov dword [ebp-24],0x0a030a04
     call offset_enemy4
      #show dword[0x10000054]
     
-    ;-----------------print enemy4 test-----------------  
-    mov eax,dword[0x10000054]
-    mov ebx, dword[ebp-24]
-    mov dword[eax],ebx
-
-    ;-----------------load paint enemy5---------------- ; falta morir
+    ;-----------------load paint enemy5---------------- ; ready
     mov dword[0x10000058],0  ; death flag
     sub esp,4
     mov dword [ebp-28],0x0a030a04
     call offset_enemy5
      #show dword[0x10000062]
     
-    ;-----------------print enemy5 test-----------------  
-    mov eax,dword[0x10000062]
-    mov ebx, dword[ebp-28]
-    mov dword[eax],ebx
 
-    ;-----------------load paint enemy6---------------- ; falta morir
-    mov dword[0x10000062],0  ; death flag
+    ;-----------------load paint enemy6---------------- ; ready
+    mov dword[0x10000086],0  ; death flag
     sub esp,4
     mov dword [ebp-32],0x0a030a04
     call offset_enemy6
      #show dword[0x10000066]
     
-    ;-----------------print enemy6 test-----------------  
-    mov eax,dword[0x10000066]
-    mov ebx, dword[ebp-32]
-    mov dword[eax],ebx
 
-    ;-----------------load paint enemy7---------------- ; falta morir
+    ;-----------------load paint enemy7---------------- ; ready
     mov dword[0x10000070],0  ; death flag
     sub esp,4
     mov dword [ebp-36],0x0a030a04
     call offset_enemy7
      #show dword[0x10000074]
-    
-    ;-----------------print enemy7 test-----------------  
-    mov eax,dword[0x10000074]
-    mov ebx, dword[ebp-36]
-    mov dword[eax],ebx
 
     ;-----------------load paint enemy8---------------- ; falta morir
     mov dword[0x10000078],0  ; death flag
@@ -170,6 +143,60 @@ $Game_loop:
        mov dword[eax],ebx
        death1:
     
+;--------------------paint enemy2 death-----------
+       cmp dword[0x10000032],1
+       je death2
+       mov eax,dword[0x10000028]
+       mov ebx, dword[ebp-16]
+       mov dword[eax],ebx
+       death2:
+;-------------------paint enemy3 death----------
+       cmp dword[0x10000046],1
+       je death3
+        mov eax,dword[0x10000036]
+        mov ebx, dword[ebp-20]
+        mov dword[eax],ebx
+       death3:
+
+;-------------------paint enemy4 death----------
+       cmp dword[0x10000050],1
+       je death4
+        mov eax,dword[0x10000054]
+        mov ebx, dword[ebp-24]
+        mov dword[eax],ebx
+       death4:
+
+;-------------------paint enemy5 death----------
+       cmp dword[0x10000058],1
+       je death5
+      mov eax,dword[0x10000062]
+      mov ebx, dword[ebp-28]
+      mov dword[eax],ebx
+       death5:
+;-------------------paint enemy6 death----------
+       cmp dword[0x10000086],1
+       je death6
+    mov eax,dword[0x10000066]
+    mov ebx, dword[ebp-32]
+    mov dword[eax],ebx
+       death6:
+
+;-------------------paint enemy7 death----------
+       cmp dword[0x10000070],1
+       je death7
+    mov eax,dword[0x10000074]
+    mov ebx, dword[ebp-36]
+    mov dword[eax],ebx
+       death7:
+
+;-------------------paint enemy8 death----------
+       cmp dword[0x10000078],1
+       je death8
+    mov eax,dword[0x10000082]
+    mov ebx, dword[ebp-40]
+    mov dword[eax],ebx
+       death8:
+
 
     push 50
     call delay
@@ -400,10 +427,24 @@ cmp dword[0x10000008],1
 jl notshot
 cmp ecx,1
 je notshot
-cmp dword[0x10000020],edi  ; kill enemy
-#show edi
-#show dword[0x10000020]
+cmp dword[0x10000020],edi  ; kill enemy1
 je kill1                   ;--
+cmp dword[0x10000028],edi
+je kill2
+cmp dword[0x10000036],edi
+je kill3
+cmp dword[0x10000054],edi
+je kill4
+cmp dword[0x10000062],edi
+je kill5
+cmp dword[0x10000066],edi
+je kill6
+cmp dword[0x10000074],edi
+je kill7
+cmp dword[0x10000082],edi
+je kill8
+#show edi
+#show dword[0x10000028]
 mov dword[0x10000004], edi
 #show edi
 mov ecx,dword[ebp+16]
@@ -431,6 +472,8 @@ call offset_shot
 noreset:
 cmp dword[0x10000020],edi
 jne norestnext
+cmp dword[0x10000028],edi
+jne norestnext
 kill1:
 #show[10] ascii 
 #show ["**"]
@@ -452,6 +495,161 @@ mov edx,dword[0x10000004] ; store preview
 mov ebx, 0x0e200e20 ;  clear
 mov dword[edx],ebx
 call offset_shot
+jmp norestnext
+kill2:
+#show[10] ascii 
+#show ["***"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000032],1      ; is death
+mov eax,dword[0x10000028]    ;
+#show dword[0x10000028]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000028],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+jmp norestnext
+kill3:
+#show[10] ascii 
+#show ["****"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000046],1      ; is death
+mov eax,dword[0x10000036]    ;
+#show dword[0x10000036]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000036],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+jmp norestnext
+kill4:
+#show[10] ascii 
+#show ["*****"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000050],1      ; is death
+mov eax,dword[0x10000054]    ;
+#show dword[0x10000054]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000054],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+jmp norestnext
+kill5:
+#show[10] ascii 
+#show ["*****-"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000058],1      ; is death
+mov eax,dword[0x10000062]    ;
+#show dword[0x10000062]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000062],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+jmp norestnext
+kill6:
+#show[10] ascii 
+#show ["-*****"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000086],1      ; is death
+mov eax,dword[0x10000066]    ;
+#show dword[0x10000066]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000066],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+jmp norestnext
+kill7:
+#show[10] ascii 
+#show ["***-*"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000070],1      ; is death
+mov eax,dword[0x10000074]    ;
+#show dword[0x10000074]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000074],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+jmp norestnext
+kill8:
+#show[10] ascii 
+#show ["***--"]
+#show[10] ascii 
+#show edi
+
+mov dword[0x10000078],1      ; is death
+mov eax,dword[0x10000082]    ;
+#show dword[0x10000082]
+mov dword[eax],0x0e200e20   ;clean enemy
+mov dword[edi],0x0e200e20  ; clean last shot pos
+mov dword[0x10000082],0    ; enemy pos null
+mov dword[0x10000012],25   ; reset shot time
+mov dword[0x10000008],0    ; shot off
+mov ecx ,dword[0x10000016] ; ship position for shot to docking
+mov dword [ebp+20],ecx
+mov dword [ebp+16],25      ; pass pos
+mov edx,dword[0x10000004] ; store preview
+mov ebx, 0x0e200e20 ;  clear
+mov dword[edx],ebx
+call offset_shot
+
 norestnext:
 
 ret
