@@ -1,7 +1,10 @@
 
 ; 0x0a030a04 first colum enemies
+; 0x0f0d0f0c , enemy shot
 start:
 
+    push 39   ;shot enemy1
+    push 16
     push 55   ;enemy8 der 4
     push 15
     push 51   ;enemy7 der 3
@@ -45,6 +48,7 @@ start:
     mov dword [ebp-4], 0x04070406 ; Current space ship
     call offset
    mov dword[0x10000000], esi
+
    ; --------------- load paint shot--------------
      mov dword[0x10000016],39
    mov dword[0x10000008],0 ; turn on shot
@@ -109,7 +113,19 @@ start:
     mov dword [ebp-40],0x0a030a04
     call offset_enemy8
      #show dword[0x10000082]
+
     
+    ;-----------------load shot enemy1----------------; in process
+    mov dword[0x10000102],0xb800   ; preview
+    mov dword[0x10000090],2019 ; shot active on time
+    sub esp,4
+    mov dword[ebp-44],0x0f0d0f0c
+    call offset_shot_enemy1
+    #show dword[0x10000094]
+
+
+    ;-------------test paint gun----------------------------
+
 
 
     ;----------------print lives----------------------
@@ -119,6 +135,8 @@ start:
     mov dword[ebx],0x0f02
     mov ebx, 0xb888
     mov dword[ebx],0x0f02
+    mov dword[0x10000200],ebx
+
 
 
 
@@ -137,8 +155,21 @@ $Game_loop:
     mov ebx,dword[ebp-8]
     mov dword[edi],ebx
     call shot
-;------------------paint enemy1 death*--------------------
 
+;-----------------------paint enem1 shot-------------------
+
+    cmp dword[0x10000024],1
+    je death1
+    mov eax,dword[0x10000090]
+    cmp word [0xffff0008] , eax
+    jle nolaunch
+    call shote1
+    nolaunch:
+    #show dword [0xffff0008] ; time 
+
+
+;------------------paint enemy1 death*--------------------
+      
        cmp dword[0x10000024],1
        je death1
        mov eax,dword[0x10000020]
@@ -306,7 +337,7 @@ $delay_loop:
     cmp dword [0xffff0008], eax
     jl $delay_loop
     ret
-;---------------------------------offsets zone------------------------------
+;---------------------------------offsets  zone------------------------------
 offset:
 mov esi, dword [ebp+8] ; Row
     mov ebx, esi
@@ -340,6 +371,8 @@ mov eax, dword [ebp+24] ; Row
     add eax, 0xb800
     mov dword[0x10000020] , eax
     ret
+
+
 offset_enemy2:
 mov eax, dword [ebp+32] ; Row
     mov ebx, eax
@@ -422,9 +455,90 @@ mov eax, dword [ebp+80] ; Row
     mov dword[0x10000082] , eax
     ret
 
-;---------------------------------------gun zone----------------------------------
-shot:
+offset_shot_enemy1:
+mov eax, dword [ebp+88] ; Row
+    mov ebx, eax
+    shl eax, 6
+    shl ebx, 4
+    add eax, ebx
+    add eax, dword [ebp+92] ; Col
+    shl eax, 1
+    add eax, 0xb800
+    mov dword[0x10000094] , eax
+    ret
 
+;---------------------------------------gun zone----------------------------------
+shote1:
+
+
+
+
+    cmp dword[0x10000098],30
+    je limitshot1
+    cmp dword[0x10000094],esi
+    je ko1
+
+    mov edx,dword[0x10000102] ; store preview
+    #show dword[0x10000102]
+    mov ebx, 0x0e200e20 ;  clear
+    mov dword[edx],ebx
+
+
+    mov eax,dword[0x10000094]  ;paint shot1
+    mov ebx, dword[ebp-44]
+    #show eax
+    mov dword[eax],ebx
+    mov ecx, dword [ebp+88]
+    mov dword[0x10000102],eax  ; save preview pos
+    #show dword[0x10000102]
+
+    inc ecx 
+    #show ecx
+    mov dword[0x10000098],ecx
+    mov dword[ebp+88] ,ecx
+    call offset_shot_enemy1
+    
+    limitshot1:
+    cmp dword[0x10000098],30
+    jne nonrestshot1
+    mov edx,dword[0x10000102] ; clean last pos
+    #show dword[0x10000102]
+    mov ebx, 0x0e200e20 ;  
+    mov dword[edx],ebx
+
+    add dword[0x10000090],2000 ; time shot
+    #show ["*"]
+
+    mov dword[0x10000098],0   ; reposition limit
+    mov dword[ebp+88] ,16     ; reposition shot
+    call offset_shot_enemy1
+    nonrestshot1:
+    jmp limitdown
+    ko1:
+    #show ["---"]
+    mov edx,dword[0x10000102] ; clean last pos
+    #show dword[0x10000102]
+    mov ebx, 0x0e200e20 ;  
+    mov dword[edx],ebx
+
+    mov ebx,dword[0x10000200]    ;lives -1 
+    mov dword[ebx],0x0e200e20
+    sub dword[0x10000200],4
+
+    add dword[0x10000090],2000 ; time shot
+
+    mov dword[0x10000098],0   ; reposition limit
+    mov dword[ebp+88] ,16     ; reposition shot
+    call offset_shot_enemy1
+ 
+
+    limitdown:
+
+
+ret
+
+
+shot:
 mov ecx,dword[0x10000012]
 cmp dword[0x10000008],1
 jl notshot
