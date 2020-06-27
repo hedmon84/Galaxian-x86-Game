@@ -103,19 +103,22 @@ start:
     call offset_enemy7
      #show dword[0x10000074]
 
-    ;-----------------load paint enemy8---------------- ; falta morir
+    ;-----------------load paint enemy8---------------- ; ready
     mov dword[0x10000078],0  ; death flag
     sub esp,4
     mov dword [ebp-40],0x0a030a04
     call offset_enemy8
      #show dword[0x10000082]
     
-    ;-----------------print enemy8 test-----------------  
-    mov eax,dword[0x10000082]
-    mov ebx, dword[ebp-40]
-    mov dword[eax],ebx
 
 
+    ;----------------print lives----------------------
+    mov ebx, 0xb880
+    mov dword[ebx],0x0f02
+    mov ebx, 0xb884
+    mov dword[ebx],0x0f02
+    mov ebx, 0xb888
+    mov dword[ebx],0x0f02
 
 
 
