@@ -2,6 +2,14 @@
 ; 0x0f0d0f0c , enemy shot
 start:
     
+    push 55   ;enemy8 der 4
+    push 16
+    push 51   ;shot enemy7 der 3
+    push 16
+    push 27   ;shot enemy6 iz 3
+    push 16
+    push 47   ; shot enemy5 der 2
+    push 16
     push 31   ;shot enemy4 iz 2
     push 16
     push 43   ;shot enemy3 der 1
@@ -31,8 +39,10 @@ start:
     push 39   ;spaceship
     push 26
     call start
-    add esp, 20
+    add esp, 152
+    #show ["*"]
     #stop
+ 
  
 ; dword [ebp+ 8] => Row  ;ship
 ; dword [ebp+12] => Colum
@@ -122,7 +132,7 @@ start:
 
     ;-----------------load shot enemy1----------------; ready
     mov dword[0x10000102],0xb800   ; preview
-    mov dword[0x10000090],2000 ; shot active on time
+    mov dword[0x10000090],10 ; shot active on time
     sub esp,4
     mov dword[ebp-44],0x0f0d0f0c
     call offset_shot_enemy1
@@ -140,7 +150,7 @@ start:
 
     ;------------load shot enemy3-----------------------; Ready
     mov dword[0x10000148],0xb800   ; preview
-    mov dword[0x10000118],20 ; shot active on time
+    mov dword[0x10000118],80 ; shot active on time
     sub esp,4
     mov dword[ebp-52],0x0f0d0f0c
     call offset_shot_enemy3
@@ -148,19 +158,49 @@ start:
 
     ;------------load shot enemy4-----------------------; Ready
     mov dword[0x10000162],0xb800   ; preview
-    mov dword[0x10000154],20 ; shot active on time
+    mov dword[0x10000180],10 ; shot active on time
     sub esp,4
     mov dword[ebp-56],0x0f0d0f0c
     call offset_shot_enemy4
     #show dword[0x10000166]
     
 
+    ;------------load shot enemy5-----------------------; Ready
+    mov dword[0x10000170],0xb800   ; preview
+    mov dword[0x10000184],150 ; shot active on time
+    sub esp,4
+    mov dword[ebp-60],0x0f0d0f0c
+    call offset_shot_enemy5
+    #show dword[0x10000174]
 
+    ;------------load shot enemy6-----------------------; Ready
+    mov dword[0x10000178],0xb800   ; preview
+    mov dword[0x10000188],30 ; shot active on time
+    sub esp,4
+    mov dword[ebp-64],0x0f0d0f0c
+    call offset_shot_enemy6
+    #show dword[0x10000192]
+    ;------------load shot enemy7-----------------------; Ready
+    mov dword[0x10000196],0xb800   ; preview
+    mov dword[0x10000220],200 ; shot active on time
+    sub esp,4
+    mov dword[ebp-68],0x0f0d0f0c
+    call offset_shot_enemy7
+    #show dword[0x10000224]
 
+    ;------------load shot enemy8-----------------------; Ready
+    mov dword[0x10000228],0xb800   ; preview
+    mov dword[0x10000232],250 ; shot active on time
+    sub esp,4
+    mov dword[ebp-72],0x0f0d0f0c
+    call offset_shot_enemy8
+    #show dword[0x10000236]
+    
+    
     ;-------------test paint gun----------------------------
     
-    ;mov eax,dword[0x10000166]   ;shot enm 4
-    ;mov ebx, dword[ebp-56]
+    ;mov eax,dword[0x10000236]   ;shot enm 4
+    ;mov ebx, dword[ebp-72]
     ;#show eax
     ;mov dword[eax],ebx
     
@@ -176,14 +216,18 @@ start:
     mov dword[ebx],0x0f02
     mov dword[0x10000200],ebx
 
+    mov dword[0x10000240],3  ;lives
+    mov dword[0x10000244],8  ;enemies 
+  
+
 
     ;----------------print score----------------------
     mov ebx, 0xb814
-    mov dword[ebx],0x0f170f16
+    mov dword[ebx],0x0f630f73
     mov ebx, 0xb818
-    mov dword[ebx],0x0f190f18
+    mov dword[ebx],0x0f720f6f
     mov ebx, 0xb81c
-    mov dword[ebx],0x0f1a
+    mov dword[ebx],0x0f65
 
 
 
@@ -191,6 +235,12 @@ start:
 
 
 $Game_loop:
+    #show dword[0x10000244]
+
+    cmp dword[0x10000244],0
+    je over
+    cmp dword[0x10000240],0
+    je over
   ;-----------------paint and clear ship-----------
     mov edx, dword[0x10000000] ;  last position ship
     mov ebx, 0x0e200e20 ;char clear
@@ -214,7 +264,6 @@ $Game_loop:
     jle nolaunch
     call shote1
     nolaunch:
-    #show dword [0x10000312] ; time 
 
     deaths1:
 ;-----------------------paint enem2 shot-------------------
@@ -229,7 +278,9 @@ $Game_loop:
     deaths2:
    
 ;-----------------------paint enem3 shot-------------------
+
     inc dword[0x10000320]
+    
     cmp dword[0x10000046],1
     je deaths3
     mov eax,dword[0x10000118]
@@ -243,13 +294,56 @@ $Game_loop:
     inc dword[0x10000324]
     cmp dword[0x10000050],1
     je deaths4
-    mov eax,dword[0x10000154]
+    mov eax,dword[0x10000180]
     cmp word [0x10000324] , eax
     jle nolaunch4
     call shot4
     nolaunch4:
     deaths4:
-   
+
+;-----------------------paint enem5 shot-------------------
+    inc dword[0x10000328]
+    cmp dword[0x10000058],1
+    je deaths5
+    mov eax,dword[0x10000184]
+    cmp word [0x10000328] , eax
+    jle nolaunch5
+    call shot5
+    nolaunch5:
+    deaths5:
+
+;-----------------------paint enem6 shot-------------------
+    inc dword[0x10000332]
+    cmp dword[0x10000086],1
+    je deaths6
+    mov eax,dword[0x10000188]
+    cmp word [0x10000332] , eax
+    jle nolaunch6
+    call shot6
+    nolaunch6:
+    deaths6:
+
+;-----------------------paint enem7 shot-------------------
+    inc dword[0x10000336]
+    cmp dword[0x10000070],1
+    je deaths7
+    mov eax,dword[0x10000220]
+    cmp word [0x10000336] , eax
+    jle nolaunch7
+    call shot7
+    nolaunch7:
+    deaths7:
+
+;-----------------------paint enem8 shot-------------------
+    inc dword[0x10000344]
+    cmp dword[0x10000078],1
+    je deaths8
+    mov eax,dword[0x10000232]
+    cmp word [0x10000344] , eax
+    jle nolaunch8
+    call shot8
+    nolaunch8:
+    deaths8:
    
 ;------------------paint enemy1 death*--------------------
       
@@ -585,6 +679,55 @@ mov eax, dword [ebp+112] ; Row
     add eax, 0xb800
     mov dword[0x10000166] , eax
     ret
+
+offset_shot_enemy5:
+mov eax, dword [ebp+120] ; Row
+    mov ebx, eax
+    shl eax, 6
+    shl ebx, 4
+    add eax, ebx
+    add eax, dword [ebp+124] ; Col
+    shl eax, 1
+    add eax, 0xb800
+    mov dword[0x10000174] , eax
+    ret
+
+
+offset_shot_enemy6:
+mov eax, dword [ebp+128] ; Row
+    mov ebx, eax
+    shl eax, 6
+    shl ebx, 4
+    add eax, ebx
+    add eax, dword [ebp+132] ; Col
+    shl eax, 1
+    add eax, 0xb800
+    mov dword[0x10000192] , eax
+    ret
+offset_shot_enemy7:
+mov eax, dword [ebp+136] ; Row
+    mov ebx, eax
+    shl eax, 6
+    shl ebx, 4
+    add eax, ebx
+    add eax, dword [ebp+140] ; Col
+    shl eax, 1
+    add eax, 0xb800
+    mov dword[0x10000224] , eax
+    ret
+
+offset_shot_enemy8:
+mov eax, dword [ebp+144] ; Row
+    mov ebx, eax
+    shl eax, 6
+    shl ebx, 4
+    add eax, ebx
+    add eax, dword [ebp+148] ; Col
+    shl eax, 1
+    add eax, 0xb800
+    mov dword[0x10000236] , eax
+    ret
+
 ;---------------------------------------gun zone----------------------------------
 shote1:
     cmp dword[0x10000098],30
@@ -638,6 +781,8 @@ shote1:
     mov ebx,dword[0x10000200]    ;lives -1 
     mov dword[ebx],0x0e200e20
     sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
+    
     
 
     loop1:
@@ -712,6 +857,7 @@ shot2:
     mov ebx,dword[0x10000200]    ;lives -1 
     mov dword[ebx],0x0e200e20
     sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
     
 
     loop3:
@@ -776,7 +922,7 @@ shot3:
     mov ebx, 0x0e200e20 ;  
     mov dword[edx],ebx
 
-    add dword[0x10000118],50 ; time shot
+    add dword[0x10000118],200 ; time shot
     #show ["*"]
 
     mov dword[0x10000152],0   ; reposition limit
@@ -794,6 +940,7 @@ shot3:
     mov ebx,dword[0x10000200]    ;lives -1 
     mov dword[ebx],0x0e200e20
     sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
     
 
     loop4:
@@ -807,7 +954,7 @@ shot3:
     mov dword[esi],0x0e200e20    ; clean explosion
 
     mov dword[0x10000308],0
-    add dword[0x10000118],20 ; time shot
+    add dword[0x10000118],200 ; time shot
 
     mov dword[ebp+12],39   ; reposition ship
     call offset
@@ -820,8 +967,6 @@ shot3:
     call offset_shot_enemy3
 
     limitdown3:
-
-
 ret
 
 shot4:
@@ -858,7 +1003,7 @@ shot4:
     mov ebx, 0x0e200e20 ;  
     mov dword[edx],ebx
 
-    add dword[0x10000154],50 ; time shot
+    add dword[0x10000180],50 ; time shot
     #show ["*"]
 
     mov dword[0x10000156],0   ; reposition limit
@@ -876,6 +1021,7 @@ shot4:
     mov ebx,dword[0x10000200]    ;lives -1 
     mov dword[ebx],0x0e200e20
     sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
     
 
     loop4:
@@ -889,7 +1035,7 @@ shot4:
     mov dword[esi],0x0e200e20    ; clean explosion
 
     mov dword[0x10000340],0
-    add dword[0x10000154],20 ; time shot
+    add dword[0x10000180],20 ; time shot
 
     mov dword[ebp+12],39   ; reposition ship
     call offset
@@ -901,6 +1047,338 @@ shot4:
     mov dword[ebp+112] ,16     ; reposition shot
     call offset_shot_enemy4
 
+    limitdown4:
+ret
+
+shot5:
+
+    cmp dword[0x10000156],30
+    je limitshot4
+    cmp dword[0x10000174],esi
+    je ko4
+
+    mov edx,dword[0x10000170] ; store preview
+    #show dword[0x10000170]
+    mov ebx, 0x0e200e20 ;  clear
+    mov dword[edx],ebx
+
+    mov eax,dword[0x10000174]  ;paint shot1
+    mov ebx, dword[ebp-60]
+    #show eax
+    mov dword[eax],ebx
+    mov ecx, dword [ebp+120]
+    mov dword[0x10000170],eax  ; save preview pos
+    #show dword[0x10000170]
+
+    inc ecx 
+    #show ecx
+    mov dword[0x10000156],ecx
+    mov dword[ebp+120] ,ecx
+    call offset_shot_enemy5
+    
+    limitshot4:
+    cmp dword[0x10000156],30
+    jne nonrestshot4
+    mov edx,dword[0x10000170] ; clean last pos shot
+    #show dword[0x10000170]
+    mov ebx, 0x0e200e20 ;  
+    mov dword[edx],ebx
+
+    add dword[0x10000184],100 ; time shot
+    #show ["*"]
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+120] ,16     ; reposition shot
+    call offset_shot_enemy5
+    nonrestshot4:
+    jmp limitdown4
+    ko4:
+    #show ["---"]
+    mov edx,dword[0x10000170] ; clean last pos
+    #show dword[0x10000170]
+    mov ebx, 0x0e200e20;  
+    mov dword[edx],ebx
+
+    mov ebx,dword[0x10000200]    ;lives -1 
+    mov dword[ebx],0x0e200e20
+    sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
+    
+
+    loop4:
+    cmp  dword[0x10000340],182020
+    jge endexplotion4
+    mov dword[esi],0x0e100e11    ; explotion
+    inc dword[0x10000340]
+    #show dword[0x10000340]
+    jmp loop4
+    endexplotion4:
+    mov dword[esi],0x0e200e20    ; clean explosion
+
+    mov dword[0x10000340],0
+    add dword[0x10000184],100 ; time shot
+
+    mov dword[ebp+12],39   ; reposition ship
+    call offset
+    mov dword[ebp+16],25   ; reposition shots
+    mov dword[ebp+20],39 
+    call offset_shot
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+120] ,16     ; reposition shot
+    call offset_shot_enemy5
+    
+    limitdown4:
+
+
+ret
+
+shot6:
+
+    cmp dword[0x10000156],30
+    je limitshot4
+    cmp dword[0x10000192],esi
+    je ko4
+
+    mov edx,dword[0x10000178] ; store preview
+    #show dword[0x10000178]
+    mov ebx, 0x0e200e20 ;  clear
+    mov dword[edx],ebx
+
+    mov eax,dword[0x10000192]  ;paint shot1
+    mov ebx, dword[ebp-64]
+    #show eax
+    mov dword[eax],ebx
+    mov ecx, dword [ebp+128]
+    mov dword[0x10000178],eax  ; save preview pos
+    #show dword[0x10000178]
+
+    inc ecx 
+    #show ecx
+    mov dword[0x10000156],ecx
+    mov dword[ebp+128] ,ecx
+    call offset_shot_enemy6
+    
+    limitshot4:
+    cmp dword[0x10000156],30
+    jne nonrestshot4
+    mov edx,dword[0x10000178] ; clean last pos shot
+    #show dword[0x10000178]
+    mov ebx, 0x0e200e20 ;  
+    mov dword[edx],ebx
+
+    add dword[0x10000188],100 ; time shot
+    #show ["*"]
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+128] ,16     ; reposition shot
+    call offset_shot_enemy6
+    nonrestshot4:
+    jmp limitdown4
+    ko4:
+    #show ["---"]
+    mov edx,dword[0x10000178] ; clean last pos
+    #show dword[0x10000178]
+    mov ebx, 0x0e200e20;  
+    mov dword[edx],ebx
+
+    mov ebx,dword[0x10000200]    ;lives -1 
+    mov dword[ebx],0x0e200e20
+    sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
+    
+
+    loop4:
+    cmp  dword[0x10000340],182020
+    jge endexplotion4
+    mov dword[esi],0x0e100e11    ; explotion
+    inc dword[0x10000340]
+    #show dword[0x10000340]
+    jmp loop4
+    endexplotion4:
+    mov dword[esi],0x0e200e20    ; clean explosion
+
+    mov dword[0x10000340],0
+    add dword[0x10000188],100 ; time shot
+
+    mov dword[ebp+12],39   ; reposition ship
+    call offset
+    mov dword[ebp+16],25   ; reposition shots
+    mov dword[ebp+20],39 
+    call offset_shot
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+128] ,16     ; reposition shot
+    call offset_shot_enemy6
+    
+    limitdown4:
+
+
+ret
+
+
+shot7:
+
+    cmp dword[0x10000156],30
+    je limitshot4
+    cmp dword[0x10000224],esi
+    je ko4
+
+    mov edx,dword[0x10000196] ; store preview
+    #show dword[0x10000196]
+    mov ebx, 0x0e200e20 ;  clear
+    mov dword[edx],ebx
+
+    mov eax,dword[0x10000224]  ;paint shot1
+    mov ebx, dword[ebp-68]
+    #show eax
+    mov dword[eax],ebx
+    mov ecx, dword [ebp+136]
+    mov dword[0x10000196],eax  ; save preview pos
+    #show dword[0x10000196]
+
+    inc ecx 
+    #show ecx
+    mov dword[0x10000156],ecx
+    mov dword[ebp+136] ,ecx
+    call offset_shot_enemy7
+    
+    limitshot4:
+    cmp dword[0x10000156],30
+    jne nonrestshot4
+    mov edx,dword[0x10000196] ; clean last pos shot
+    #show dword[0x10000196]
+    mov ebx, 0x0e200e20 ;  
+    mov dword[edx],ebx
+
+    add dword[0x10000220],100 ; time shot
+    #show ["*"]
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+136] ,16     ; reposition shot
+    call offset_shot_enemy7
+    nonrestshot4:
+    jmp limitdown4
+    ko4:
+    #show ["---"]
+    mov edx,dword[0x10000196] ; clean last pos
+    #show dword[0x10000196]
+    mov ebx, 0x0e200e20;  
+    mov dword[edx],ebx
+
+    mov ebx,dword[0x10000200]    ;lives -1 
+    mov dword[ebx],0x0e200e20
+    sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
+    
+
+    loop4:
+    cmp  dword[0x10000340],182020
+    jge endexplotion4
+    mov dword[esi],0x0e100e11    ; explotion
+    inc dword[0x10000340]
+    #show dword[0x10000340]
+    jmp loop4
+    endexplotion4:
+    mov dword[esi],0x0e200e20    ; clean explosion
+
+    mov dword[0x10000340],0
+    add dword[0x10000220],100 ; time shot
+
+    mov dword[ebp+12],39   ; reposition ship
+    call offset
+    mov dword[ebp+16],25   ; reposition shots
+    mov dword[ebp+20],39 
+    call offset_shot
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+136] ,16     ; reposition shot
+    call offset_shot_enemy7
+    
+    limitdown4:
+
+
+ret
+
+shot8:
+
+    cmp dword[0x10000156],30
+    je limitshot4
+    cmp dword[0x10000236],esi
+    je ko4
+
+    mov edx,dword[0x10000228] ; store preview
+    #show dword[0x10000228]
+    mov ebx, 0x0e200e20 ;  clear
+    mov dword[edx],ebx
+
+    mov eax,dword[0x10000236]  ;paint shot1
+    mov ebx, dword[ebp-72]
+    #show eax
+    mov dword[eax],ebx
+    mov ecx, dword [ebp+144]
+    mov dword[0x10000228],eax  ; save preview pos
+    #show dword[0x10000228]
+
+    inc ecx 
+    #show ecx
+    mov dword[0x10000156],ecx
+    mov dword[ebp+144] ,ecx
+    call offset_shot_enemy8
+    
+    limitshot4:
+    cmp dword[0x10000156],30
+    jne nonrestshot4
+    mov edx,dword[0x10000228] ; clean last pos shot
+    #show dword[0x10000228]
+    mov ebx, 0x0e200e20 ;  
+    mov dword[edx],ebx
+
+    add dword[0x10000232],100 ; time shot
+    #show ["*"]
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+144] ,16     ; reposition shot
+    call offset_shot_enemy8
+    nonrestshot4:
+    jmp limitdown4
+    ko4:
+    #show ["---"]
+    mov edx,dword[0x10000228] ; clean last pos
+    #show dword[0x10000228]
+    mov ebx, 0x0e200e20;  
+    mov dword[edx],ebx
+
+    mov ebx,dword[0x10000200]    ;lives -1 
+    mov dword[ebx],0x0e200e20
+    sub dword[0x10000200],4
+    dec dword[0x10000240]         ; lives -1
+    
+    
+
+    loop4:
+    cmp  dword[0x10000340],182020
+    jge endexplotion4
+    mov dword[esi],0x0e100e11    ; explotion
+    inc dword[0x10000340]
+    #show dword[0x10000340]
+    jmp loop4
+    endexplotion4:
+    mov dword[esi],0x0e200e20    ; clean explosion
+
+    mov dword[0x10000340],0
+    add dword[0x10000232],100 ; time shot
+
+    mov dword[ebp+12],39   ; reposition ship
+    call offset
+    mov dword[ebp+16],25   ; reposition shots
+    mov dword[ebp+20],39 
+    call offset_shot
+
+    mov dword[0x10000156],0   ; reposition limit
+    mov dword[ebp+144] ,16     ; reposition shot
+    call offset_shot_enemy8
+    
     limitdown4:
 
 
@@ -964,7 +1442,7 @@ kill1:
 #show ["**"]
 #show[10] ascii 
 #show edi
-
+dec dword[0x10000244]
 mov edx,dword[0x10000102] ; clean last pos shot
 #show dword[0x10000102]
 mov ebx, 0x0e200e20 ;  
@@ -996,7 +1474,7 @@ mov edx,dword[0x10000140] ; clean last pos shot
 #show dword[0x10000140]
 mov ebx, 0x0e200e20 ;  
 mov dword[edx],ebx
-
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000032],1      ; is death
 mov eax,dword[0x10000028]    ;
 #show dword[0x10000028]
@@ -1023,7 +1501,7 @@ mov edx,dword[0x10000148] ; clean last pos shot
 #show dword[0x10000148]
 mov ebx, 0x0e200e20 ;  
 mov dword[edx],ebx
-
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000046],1      ; is death
 mov eax,dword[0x10000036]    ;
 #show dword[0x10000036]
@@ -1050,7 +1528,7 @@ mov edx,dword[0x10000162] ; clean last pos shot
 #show dword[0x10000162]
 mov ebx, 0x0e200e20 ;  
 mov dword[edx],ebx
-
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000050],1      ; is death
 mov eax,dword[0x10000054]    ;
 #show dword[0x10000054]
@@ -1073,6 +1551,12 @@ kill5:
 #show[10] ascii 
 #show edi
 
+mov edx,dword[0x10000170] ; clean last pos shot
+#show dword[0x10000170]
+mov ebx, 0x0e200e20 ;  
+mov dword[edx],ebx
+
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000058],1      ; is death
 mov eax,dword[0x10000062]    ;
 #show dword[0x10000062]
@@ -1095,6 +1579,11 @@ kill6:
 #show[10] ascii 
 #show edi
 
+mov edx,dword[0x10000178] ; clean last pos shot
+#show dword[0x10000178]
+mov ebx, 0x0e200e20 ;  
+mov dword[edx],ebx
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000086],1      ; is death
 mov eax,dword[0x10000066]    ;
 #show dword[0x10000066]
@@ -1117,6 +1606,11 @@ kill7:
 #show[10] ascii 
 #show edi
 
+mov edx,dword[0x10000196] ; clean last pos shot
+#show dword[0x10000196]
+mov ebx, 0x0e200e20 ;  
+mov dword[edx],ebx
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000070],1      ; is death
 mov eax,dword[0x10000074]    ;
 #show dword[0x10000074]
@@ -1139,6 +1633,12 @@ kill8:
 #show[10] ascii 
 #show edi
 
+mov edx,dword[0x10000228] ; clean last pos shot
+#show dword[0x10000228]
+mov ebx, 0x0e200e20 ;  
+mov dword[edx],ebx
+
+dec dword[0x10000244]    ;kill enemy count
 mov dword[0x10000078],1      ; is death
 mov eax,dword[0x10000082]    ;
 #show dword[0x10000082]
@@ -1158,3 +1658,62 @@ call offset_shot
 norestnext:
 
 ret
+
+
+over:
+
+cmp dword[0x10000244],0
+je win
+push 0x4
+jmp loose
+win:
+push 0x2
+loose:
+call clrscr
+add esp,4
+#stop
+
+
+clrscr:
+mov ebx,dword [esp+4]   ; pass 0xa from the stack to ebx
+and ebx, 0x0f           ; and is a mascara  this ebx = 0x1212323a  conerts to this  ebx = 0x0000000a  using         
+mov ecx,ebx          
+shl ecx,28              ; shift to the bit 31
+shl ebx,12              ; ; shift to the bit 16
+or ecx,ebx              ;  or combine ecx and ebx 
+or ecx,0x00200020       ; or combine ecx with 0x00200020
+mov ebx,0xb800          ; the first position of the screen
+
+
+$loop:
+mov dword[ebx],ecx     ; dword[ebx] is the first position of the screen and pass ecx to that pos
+add ebx,4              ; add for to color the next pos
+cmp ebx,0xcac0         ; when is less then 0xcac0 the las pos of the screen finish
+jl  $loop
+
+cmp dword[0x10000244],0
+je winne
+mov ebx, 0xc240
+mov dword[ebx],0x4f414f47
+mov ebx, 0xc244
+mov dword[ebx],0x4f454f4d
+mov ebx,0xc24c
+mov dword[ebx],0x4f564f4f
+mov ebx,0xc250
+mov dword[ebx],0x4f524f45
+jmp fin
+winne:
+mov ebx, 0xc244
+mov dword[ebx],0x2f492f57
+mov ebx,0xc248
+mov dword[ebx],0x2f4e2f4e
+mov ebx,0xc24c
+mov dword[ebx],0x2f522f45
+fin:
+
+
+
+ret
+
+
+#stop
