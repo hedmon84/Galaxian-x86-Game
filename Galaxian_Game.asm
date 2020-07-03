@@ -1,7 +1,6 @@
 ; 0x0a030a04 first colum enemies
 ; 0x0f0d0f0c , enemy shot
 start:
-    
     push 55   ;enemy8 der 4
     push 16
     push 51   ;shot enemy7 der 3
@@ -228,7 +227,16 @@ start:
     mov dword[ebx],0x0f720f6f
     mov ebx, 0xb81c
     mov dword[ebx],0x0f65
+    ;----------------print Galaxian----------------------
 
+    mov ebx, 0xb846
+    mov dword[ebx],0x0f410f47
+    mov ebx, 0xb84a
+    mov dword[ebx],0x0f410f4c
+    mov ebx, 0xb84e
+    mov dword[ebx],0x0f490e58
+    mov ebx, 0xb852
+    mov dword[ebx],0x0f4e0f41
 
 
 
