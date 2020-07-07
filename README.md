@@ -8,3 +8,6 @@ The game is quite simple. Swarm after swarm of aliens attacks the player-control
 <p align="center">
 <img class="_2nKI6" src="https://66.media.tumblr.com/eeef40022edc85c74f7e602fe4df6f64/tumblr_op97abdenu1sfxb96o1_400.gifv" alt="#gif from Abel M'Vada">
 </p>
+
+
+check my video: https://www.youtube.com/watch?v=E7RdpdutpFI
